@@ -1,0 +1,36 @@
+{
+  "name": "labyrinth_game",
+  "version": "1.0.0",
+  "description": "Pacman-like game with different levels",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp-haml": "^0.1.6"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.7.2",
+    "babel-preset-es2015": "^6.22.0",
+    "cssnano": "^3.10.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-imagemin": "^3.1.1",
+    "gulp-include": "^2.3.1",
+    "gulp-postcss": "^6.3.0",
+    "gulp-sass": "^3.1.0",
+    "gulp-sass-glob": "^1.0.8",
+    "gulp-svg-sprites": "^4.0.2",
+    "gulp-uglify": "^2.0.1",
+    "pump": "^1.0.2",
+    "run-sequence": "^1.2.2"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://CyrilViXP@bitbucket.org/CyrilViXP/labyrinthgame.git"
+  },
+  "author": "Cyril ViXP",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/CyrilViXP/labyrinthgame#readme"
+}

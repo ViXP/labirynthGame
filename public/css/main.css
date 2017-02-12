@@ -1,0 +1,155 @@
+/* MAIN SASS FILE */
+/* BASE STYLES */
+body {
+  background: black;
+  margin: 0;
+  text-align: center;
+  font-family: "Pangolin", cursive; }
+
+#map {
+  border: 0.05vmin solid #005;
+  width: 100%;
+  height: 100%;
+  background: grey center no-repeat;
+  background-size: auto 101%;
+  display: inline-block;
+  border-radius: .8vmin;
+  position: relative;
+  margin: 5vmin;
+  font-size: 0; }
+  #map .row {
+    display: block;
+    padding: 0;
+    margin: 0; }
+    #map .row .cell {
+      width: 3.4vmin;
+      height: 3.4vmin;
+      display: inline-block;
+      border: 0.05vmin solid black;
+      border-radius: .3vmin; }
+      #map .row .cell.free {
+        background-color: #005;
+        opacity: .45; }
+        #map .row .cell.free .dot {
+          background-color: white;
+          width: .5vmin;
+          height: .5vmin;
+          margin: auto;
+          margin-top: 1.7vmin;
+          border-radius: 100%; }
+      #map .row .cell.walled {
+        background-color: grey;
+        opacity: .65; }
+
+/* COUNTERS STYLES */
+.counter {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.6);
+  color: black;
+  font-size: 3.5vmin;
+  line-height: 3.6vmin;
+  border-radius: .7vmin;
+  width: 10vmin;
+  height: 5.8vmin;
+  top: .5vmin;
+  padding: .4vmin; }
+  .counter.dots {
+    left: 1.5vmin; }
+    .counter.dots::before {
+      content: 'Dots: ';
+      font-size: 2.2vmin;
+      line-height: 2.4vmin;
+      display: block; }
+  .counter.steps {
+    left: 13vmin; }
+    .counter.steps::before {
+      content: 'Steps: ';
+      font-size: 2.2vmin;
+      line-height: 2.4vmin;
+      display: block; }
+  .counter.timer {
+    right: 1.5vmin; }
+    .counter.timer::before {
+      content: 'Time: ';
+      font-size: 2.2vmin;
+      line-height: 2.4vmin;
+      display: block; }
+
+/* MENUS STYLES */
+section {
+  position: absolute;
+  opacity: .6;
+  width: 100%;
+  height: 100%; }
+  section button {
+    width: 15vmin;
+    height: 8vmin;
+    font-size: 4vmin;
+    font-weight: bold;
+    border: 0.5vmin outset red;
+    box-shadow: 0 0 1.5vmin 0.5vmin #FF9100;
+    border-radius: 1vmin;
+    font-family: "Pangolin", cursive;
+    cursor: pointer; }
+    section button:hover {
+      box-shadow: 0 0 1.5vmin 0.5vmin yellow;
+      border: 0.5vmin inset #FF9100; }
+  section.menu-new_game {
+    background-color: white;
+    color: black; }
+    section.menu-new_game p {
+      font-size: 4vmin; }
+    section.menu-new_game button {
+      background-color: #FF9100; }
+      section.menu-new_game button:hover {
+        background-color: yellow; }
+
+/* PLAYER REPPRESENTATIONS STYLES */
+.pacman {
+  width: 3.1vmin;
+  height: 3.1vmin;
+  margin: .3vmin;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 100%;
+  background: url(http://www.freeiconspng.com/uploads/pacman-png-5.png) center no-repeat;
+  background-size: cover; }
+  .pacman.move {
+    background: url(http://i.imgur.com/zRERkjv.gif) center no-repeat;
+    background-size: cover; }
+    .pacman.move.right {
+      transform: rotate(0deg); }
+    .pacman.move.left {
+      transform: rotate(-180deg); }
+    .pacman.move.up {
+      transform: rotate(-90deg); }
+    .pacman.move.down {
+      transform: rotate(90deg); }
+
+/* PLAYER REPPRESENTATIONS STYLES */
+.pacman {
+  width: 3.1vmin;
+  height: 3.1vmin;
+  margin: .3vmin;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 100%;
+  background: url(http://www.freeiconspng.com/uploads/pacman-png-5.png) center no-repeat;
+  background-size: cover; }
+  .pacman.move {
+    background: url(http://i.imgur.com/zRERkjv.gif) center no-repeat;
+    background-size: cover; }
+    .pacman.move.right {
+      transform: rotate(0deg); }
+    .pacman.move.left {
+      transform: rotate(-180deg); }
+    .pacman.move.up {
+      transform: rotate(-90deg); }
+    .pacman.move.down {
+      transform: rotate(90deg); }
+
+/* STAGES STYLES */
+#map {
+  background-image: url(); }

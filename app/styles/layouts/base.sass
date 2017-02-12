@@ -1,0 +1,47 @@
+/* BASE STYLES */
+
+body
+  background: $black
+  margin: 0
+  text-align: center
+  font-family: $font-family
+      
+#map
+  border: 0.05vmin solid #005
+  width: 100%
+  height: 100%
+  background: $grey center no-repeat
+  background-size: auto 101%
+  display: inline-block
+  border-radius: .8vmin
+  position: relative
+  margin: 5vmin
+  font-size: 0 
+      
+  & .row
+    display: block
+    padding: 0
+    margin: 0
+    
+    & .cell
+      width: 3.4vmin
+      height: 3.4vmin
+      display: inline-block
+      border: .05vmin solid $black
+      border-radius: .3vmin
+
+      &.free
+        background-color: $blue
+        opacity: .45
+        
+        & .dot
+          background-color: $white
+          width: .5vmin
+          height: .5vmin
+          margin: auto
+          margin-top: 1.7vmin
+          border-radius: 100%
+
+      &.walled
+        background-color: $grey
+        opacity: .65

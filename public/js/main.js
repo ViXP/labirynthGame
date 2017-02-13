@@ -1,1 +1,422 @@
-"use strict";function _possibleConstructorReturn(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function _inherits(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}var _createClass=function(){function t(t,e){for(var s=0;s<e.length;s++){var n=e[s];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,s,n){return s&&t(e.prototype,s),n&&t(e,n),e}}();document.addEventListener("DOMContentLoaded",function(){function t(t,e,s,n){function i(t,e){t.preventDefault(),s.removeChild(u),t.target.removeEventListener("click",t),a(e)}function a(t){new r(new o(s,c[t]),t)}var u=document.createElement("section");u.innerHTML=t,u.classList.add("menu-"+e),s.appendChild(u),s.querySelector("button.play")&&s.querySelector("button.play").addEventListener("click",function(t){i(t,1)}),s.querySelector("button.replay")&&s.querySelector("button.replay").addEventListener("click",function(t){i(t,n)}),s.querySelector("button.next")&&s.querySelector("button.next").addEventListener("click",function(t){i(t,n+1)})}var e=function(){function t(e,s,n){_classCallCheck(this,t);var o=document.createElement("div");o.classList.add("cell"),e.appendChild(o),this.node=e.lastElementChild,this.X=s,this.Y=n,this.setStatus()}return _createClass(t,[{key:"setStatus",value:function(){throw new Error("Abstract method must be overriden by the child class!")}},{key:"status",get:function(){return this._status}}]),t}(),s=function(){function t(e,s,n){_classCallCheck(this,t),e.node.appendChild(document.createElement("div")),this.node=e.node.lastElementChild,this.curX=n.X,this.curY=n.Y,this.speed=0,this.setState("stop"),this._setCss(s),this.copyPosition(n.node)}return _createClass(t,[{key:"_setCss",value:function(t){0==this.node.classList.length&&(this.cssClass=t,this.node.className=t)}},{key:"copyPosition",value:function(t){this.node.style.left=t.offsetLeft+"px",this.node.style.top=t.offsetTop+"px"}},{key:"setState",value:function(t){switch(this._state=t,this._state){case"move-right":this.node.className=this.cssClass+" move right";break;case"move-left":this.node.className=this.cssClass+" move left";break;case"move-up":this.node.className=this.cssClass+" move up";break;case"move-down":this.node.className=this.cssClass+" move down";break;default:this.node.classList.remove("move")}}},{key:"state",get:function(){return this._state}}]),t}(),n=function(){function t(e,s,n){_classCallCheck(this,t);var o=document.createElement("div");o.classList.add("counter"),o.classList.add(n),s.appendChild(o),this.node=s.lastElementChild,this.counter=e||0,this._stopped=!0,this.setStatus("started"),this.nodeUpdate()}return _createClass(t,[{key:"setStatus",value:function(t){this._status=t}},{key:"down",value:function(){return!this._frozen&&(this.counter--,this.nodeUpdate(),!0)}},{key:"pause",value:function(){this._stopped=!this._stopped}},{key:"up",value:function(){return!this._stopped&&(this.counter++,this.nodeUpdate(),!0)}},{key:"nodeUpdate",value:function(){this.node.innerText=this.counter,0==this.counter&&this.setStatus("ended")}},{key:"status",get:function(){return this._status}},{key:"paused",get:function(){return this._stopped}}]),t}(),o=function(){function t(e,s){_classCallCheck(this,t),this.quantity=0,this.dots=0,this.blocks=[],this.node=e,this._stage=s,this.rebuild()}return _createClass(t,[{key:"rebuild",value:function(){this.blocks=[],this.node.innerHTML="";var t=this;t._stage.forEach(function(e,s){t.node.appendChild(document.createElement("div"));var n=t.node.lastElementChild;n.classList.add("row"),e.forEach(function(e,o){t.blocks[o]||(t.blocks[o]=[]),["*","|",1].includes(e)?t.blocks[o][s]=new u(n,o,s):"G"==e?(t.blocks[o][s]=new a(n,o,s),t.blocks[o][s].removeDot(),t.startElement=t.blocks[o][s]):(t.blocks[o][s]=new a(n,o,s),t.dots++),t.quantity++})})}}]),t}(),i=function(t){function e(t,s){_classCallCheck(this,e);var n=_possibleConstructorReturn(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,t,"player",s));return n.speed=150,n}return _inherits(e,t),e}(s),a=function(t){function e(){return _classCallCheck(this,e),_possibleConstructorReturn(this,(e.__proto__||Object.getPrototypeOf(e)).apply(this,arguments))}return _inherits(e,t),_createClass(e,[{key:"addDot",value:function(){this._dotted=!0;var t=document.createElement("div");t.classList.add("dot"),this.node.appendChild(t)}},{key:"removeDot",value:function(){return 0!=this.dotted&&(this._dotted=!1,this.node.innerHTML="",!0)}},{key:"setStatus",value:function(){this._status="free",this.node.classList.add("free"),this.addDot()}},{key:"dotted",get:function(){return this._dotted}}]),e}(e),r=function(){function e(s,o){var a=this;_classCallCheck(this,e),this.map=s,this.node=s.node,this.levelNumber=o,this._intId=0,this.player=new i(this.map,this.map.startElement),this.dotsCount=new n(this.map.dots,this.node,"dots"),this.timer=new n(0,this.node,"timer"),this.steps=new n(0,this.node,"steps");var r=this;this._handlers={keyDown:function(t){switch(t.preventDefault(),clearInterval(r._intId),t.keyCode){case 38:r._intId=setInterval(r.stepUp.bind(r),r.player.speed);break;case 40:r._intId=setInterval(r.stepDown.bind(r),r.player.speed);break;case 37:r._intId=setInterval(r.stepLeft.bind(r),r.player.speed);break;case 39:r._intId=setInterval(r.stepRight.bind(r),r.player.speed)}},touchStart:function(t){a._touchStart=t.touches[0]},touchMove:function(t){a._touchEnd=t.touches[0],clearInterval(r._intId),Math.abs(a._touchStart.pageX-a._touchEnd.pageX)>Math.abs(a._touchStart.pageY-a._touchEnd.pageY)?r._intId=a._touchStart.pageX>a._touchEnd.pageX?setInterval(r.stepLeft.bind(r),r.player.speed):setInterval(r.stepRight.bind(r),r.player.speed):a._touchStart.pageX-a._touchEnd.pageX<Math.abs(a._touchStart.pageY-a._touchEnd.pageY)&&(r._intId=a._touchStart.pageY>a._touchEnd.pageY?setInterval(r.stepUp.bind(r),r.player.speed):setInterval(r.stepDown.bind(r),r.player.speed))},pause:function(e){e.preventDefault(),27==e.keyCode&&(clearInterval(r._intId),r._toggleControls(),r.node.querySelector("section")?r.node.removeChild(r.node.querySelector("section")):t('<h2>Game paused</h2><h3>Press ESC to continue</h3><button class="replay">Replay</button>',"pause",a.node,a.levelNumber))}},document.addEventListener("keydown",this._handlers.pause),this._toggleControls(),this._time=setInterval(function(){a.timer.up()},1e3)}return _createClass(e,[{key:"_toggleControls",value:function(){this.timer.pause(),this.dotsCount.pause(),this.steps.pause(),this.timer.paused?(document.removeEventListener("keydown",this._handlers.keyDown),document.removeEventListener("touchstart",this._handlers.touchStart),document.removeEventListener("touchmove",this._handlers.touchMove)):(document.addEventListener("keydown",this._handlers.keyDown),document.addEventListener("touchstart",this._handlers.touchStart),document.addEventListener("touchmove",this._handlers.touchMove))}},{key:"_move",value:function(e,s){return e&&"walled"!=e.status?(this.player.copyPosition(e.node),this.player.setState(s),this.steps.up(),e.removeDot()&&this.dotsCount.down()&&"ended"==this.dotsCount.status&&(this._toggleControls(),clearInterval(this._time),t("<h2>Congratulations!</h2>\n          <h3>You've finished the level</h3>\n          <p>You've made #{this.steps.counter}</p>\n          <p>Your time is #{this.timer.counter}</p>\n          <button class=\"next\">Next level</button>","level_passed",this.node,this.levelNumber)),!0):(clearInterval(this._intId),this.player.setState("stop"),!1)}},{key:"stepLeft",value:function(){var t=this.player.curX>0&&(this.map.blocks[this.player.curX-1][this.player.curY]||!1);this._move(t,"move-left")&&this.player.curX--}},{key:"stepRight",value:function(){var t=this.player.curX<this.map.blocks.length-1&&(this.map.blocks[this.player.curX+1][this.player.curY]||!1);this._move(t,"move-right")&&this.player.curX++}},{key:"stepUp",value:function(){var t=this.map.blocks[this.player.curX][this.player.curY-1]||!1;this._move(t,"move-up")&&this.player.curY--}},{key:"stepDown",value:function(){var t=this.map.blocks[this.player.curX][this.player.curY+1]||!1;this._move(t,"move-down")&&this.player.curY++}}]),e}(),u=function(t){function e(){return _classCallCheck(this,e),_possibleConstructorReturn(this,(e.__proto__||Object.getPrototypeOf(e)).apply(this,arguments))}return _inherits(e,t),_createClass(e,[{key:"setStatus",value:function(){this._status="walled",this.node.classList.add("walled")}}]),e}(e),c={1:[[" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "],[" ","*","*","*","*","*","*","*","*","*"," ","*","*","*","*","*","*","*","*","*"," "],[" ","*"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","*"," "],[" ","*"," "," ","*","*","*"," "," ","*"," ","*"," "," ","*","*","*"," "," ","*"," "],[" ","*"," ","*"," "," "," ","*"," ","*"," ","*"," ","*"," "," "," ","*"," ","*"," "],[" ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," "],[" ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," "],[" ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," "],[" ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," "],[" ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," "],[" ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," "],[" ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," ","*"," "],[" ","*"," ","*"," "," "," ","*"," ","*"," ","*"," ","*"," "," "," ","*"," ","*"," "],[" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "],[" ","*","*","*","*","*","*","*","*"," ","G"," ","*","*","*","*","*","*","*","*"," "],[" ","*"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","*"," "],[" ","*"," ","*","*"," ","*","*"," ","*"," ","*"," ","*","*"," ","*","*"," ","*"," "],[" ","*"," ","*"," "," "," ","*"," ","*"," ","*"," ","*"," "," "," ","*"," ","*"," "],[" ","*"," "," "," ","*"," "," "," ","*"," ","*"," "," "," ","*"," "," "," ","*"," "],[" ","*","*","*","*","*","*","*","*","*"," ","*","*","*","*","*","*","*","*","*"," "],[" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "]]};t('<p>Start game</p><button class="play">PLAY</button>',"new_game",document.getElementById("map"))});
+"use strict";
+
+document.addEventListener('DOMContentLoaded', ()=> {
+  class Cell {
+    constructor(row, x, y) {
+      // DOM manipulations
+      const newCell = document.createElement('div');
+      newCell.classList.add('cell');
+      row.appendChild(newCell);
+  
+      // Public properties
+      this.node = row.lastElementChild;
+      this.X = x;
+      this.Y = y;
+  
+      this.setStatus();
+    }
+  
+    get status() {
+      return this._status;
+    }
+  
+    setStatus() {
+      throw new Error("Abstract method must be overriden by the child class!");
+    }
+  }
+    class Character {
+    constructor(map, type, startCell) {
+      // DOM manipulations
+      map.node.appendChild(document.createElement('div'));   
+  
+      // Public properties      
+      this.node = map.node.lastElementChild;
+      this.curX = startCell.X;
+      this.curY = startCell.Y;
+      this.speed = 0;
+      this.setState('stop');
+  
+      this._setCss(type);
+  
+      this.copyPosition(startCell.node);
+    }
+  
+    get state() {
+      return this._state;
+    }
+  
+    _setCss(cls) {
+      if (this.node.classList.length == 0) {        
+        this.cssClass = cls;
+        this.node.className = cls;
+      }
+    }
+  
+    copyPosition(nodeToCopy) {
+      this.node.style.left = nodeToCopy.offsetLeft + 'px';
+      this.node.style.top = nodeToCopy.offsetTop + 'px';
+    }
+  
+    setState(state) {
+      this._state = state; 
+      switch(this._state) {
+        case 'move-right':
+          this.node.className = this.cssClass + ' move right';
+          break;
+        case 'move-left':
+          this.node.className = this.cssClass + ' move left';
+          break;
+        case 'move-up':
+          this.node.className = this.cssClass + ' move up';
+          break;
+        case 'move-down':
+          this.node.className = this.cssClass + ' move down';
+          break;
+        default: 
+          this.node.classList.remove('move');
+          break
+      }
+    }
+  }
+    class Counter {
+    constructor(quantity, domEl, cssClass) {
+      // DOM manipulation
+      const counter = document.createElement('div');
+      counter.classList.add('counter');
+      counter.classList.add(cssClass);
+      domEl.appendChild(counter);
+  
+      // Public properties
+      this.node = domEl.lastElementChild;
+      this.counter = quantity || 0;
+  
+      // Private properties
+      this._stopped = true;
+  
+      this.setStatus('started');
+      this.nodeUpdate();
+    }
+  
+    get status() {
+      return this._status;
+    }
+  
+    setStatus(state) {
+      this._status = state;
+    }
+  
+    down() {
+      if (!this._frozen) {
+        this.counter--;
+        this.nodeUpdate();
+        return true;
+      }
+      return false;
+    }
+  
+    pause() {
+      this._stopped = (this._stopped) ? false : true;
+    }
+  
+    get paused() {
+      return this._stopped;
+    }
+  
+    up() {      
+      if (!this._stopped) {
+        this.counter++;
+        this.nodeUpdate();
+        return true;
+      }
+      return false;
+    }
+  
+    nodeUpdate() {
+      this.node.innerText = this.counter;
+      if (this.counter == 0) {
+        this.setStatus('ended');
+      }
+    }
+  }
+    class Map {
+    constructor(domEl, mapDraw) {
+      // Public properties
+      this.quantity = 0;
+      this.dots = 0;
+      this.blocks = [];
+      this.node = domEl;
+  
+      this._stage = mapDraw;
+      
+      this.rebuild();
+    }
+  
+    rebuild() {
+      this.blocks = [];
+      this.node.innerHTML = '';
+      const self = this;
+  
+      self._stage.forEach(function(line, i){        
+        self.node.appendChild(document.createElement('div'));        
+        const row = self.node.lastElementChild;
+        row.classList.add('row');        
+        line.forEach(function(state, j){
+          if (!self.blocks[j]) { self.blocks[j] = [];}
+          if (['*', '|', 1].includes(state)) {
+            // If wall
+            self.blocks[j][i] = new Wall(row, j, i);
+          } else if (state == 'G') {
+            // If player
+            self.blocks[j][i] = new Space(row, j, i);
+            self.blocks[j][i].removeDot();
+            self.startElement = self.blocks[j][i];
+          } else {
+            // If free space
+            self.blocks[j][i] = new Space(row, j, i);
+            self.dots++;
+          }
+          self.quantity++;
+        });
+      });
+    }
+  }
+    class Player extends Character {
+    constructor(map, startCell){
+      super(map, 'player', startCell);
+      this.speed = 150;
+    }
+  }
+    class Space extends Cell {
+    get dotted() {
+      return this._dotted;
+    }
+  
+    addDot() {
+      this._dotted = true;
+      const el = document.createElement('div');
+      el.classList.add('dot');
+      this.node.appendChild(el);
+    }
+  
+    removeDot() {
+      if (this.dotted == false) {
+        return false;
+      }
+      this._dotted = false;
+      this.node.innerHTML = '';
+      return true;
+    }
+  
+    setStatus() {
+      this._status = 'free';
+      this.node.classList.add('free');
+      this.addDot();
+    }
+  }
+    class Stage {
+    constructor(map, levelNum) {
+      // Public properties
+      this.map = map;
+      this.node = map.node;
+      this.levelNumber = levelNum;
+      this._intId = 0;      
+      this.player = new Player(this.map, this.map.startElement);
+      this.dotsCount = new Counter(this.map.dots, this.node, 'dots');
+      this.timer = new Counter(0, this.node, 'timer');
+      this.steps = new Counter(0, this.node, 'steps')
+      
+      const self = this;
+      
+      // Event handlers
+      this._handlers = {
+        keyDown: (event) => {
+          event.preventDefault();
+          clearInterval(self._intId);
+          switch(event.keyCode){
+            case 38:
+              self._intId = setInterval(self.stepUp.bind(self), self.player.speed);
+              break;
+            case 40:
+              self._intId = setInterval(self.stepDown.bind(self), self.player.speed);
+              break;
+            case 37:
+              self._intId = setInterval(self.stepLeft.bind(self), self.player.speed);
+              break;
+            case 39:            
+              self._intId = setInterval(self.stepRight.bind(self), self.player.speed);
+              break;
+            }
+        },
+        
+        touchStart: (event) => {
+          this._touchStart = event.touches[0];
+        },
+        
+        touchMove: (event) => {
+          this._touchEnd = event.touches[0];
+          clearInterval(self._intId);
+  
+          if (Math.abs(this._touchStart.pageX - this._touchEnd.pageX) > Math.abs(this._touchStart.pageY - this._touchEnd.pageY)) {
+            //Horizontal moves
+            self._intId = (this._touchStart.pageX > this._touchEnd.pageX) ? setInterval(self.stepLeft.bind(self), self.player.speed) : setInterval(self.stepRight.bind(self), self.player.speed);
+          } else if ((this._touchStart.pageX - this._touchEnd.pageX) < Math.abs(this._touchStart.pageY - this._touchEnd.pageY)) {
+            //Vertical moves
+            self._intId = (this._touchStart.pageY > this._touchEnd.pageY) ? setInterval(self.stepUp.bind(self), self.player.speed) : setInterval(self.stepDown.bind(self), self.player.speed);
+          }
+        },
+  
+        pause: (event) => {
+          event.preventDefault();
+          if (event.keyCode == 27) {
+            clearInterval(self._intId);        
+            self._toggleControls();
+            if (self.node.querySelector('section')) {
+              self.node.removeChild(self.node.querySelector('section'));
+            } else {
+              Menu('<h2>Game paused</h2><h3>Press ESC to continue</h3><button class="replay">Replay</button>', 'pause', this.node, this.levelNumber);
+            }
+          }
+        }
+  
+      };
+  
+      document.addEventListener('keydown', this._handlers.pause)
+      this._toggleControls();
+           
+      this._time = setInterval(()=>{
+        this.timer.up();
+      }, 1000);
+    } 
+  
+    _toggleControls() {
+      this.timer.pause();
+      this.dotsCount.pause();
+      this.steps.pause();
+      if (this.timer.paused) {
+        document.removeEventListener('keydown', this._handlers.keyDown);      
+        document.removeEventListener('touchstart', this._handlers.touchStart);      
+        document.removeEventListener('touchmove', this._handlers.touchMove);
+      } else {
+        document.addEventListener('keydown', this._handlers.keyDown);
+        document.addEventListener('touchstart', this._handlers.touchStart);
+        document.addEventListener('touchmove', this._handlers.touchMove);
+      }
+    }
+  
+    // Main gameplay method
+    _move(block, cssClass) {
+      if (block && block.status != 'walled') {
+        this.player.copyPosition(block.node);
+        this.player.setState(cssClass);
+        this.steps.up();
+        if (block.removeDot() && this.dotsCount.down() && this.dotsCount.status == 'ended') {
+          /* GAMEOVER screen*/          
+          this._toggleControls();
+          clearInterval(this._time)
+          Menu(`<h2>Congratulations!</h2>
+          <h3>You've finished the level</h3>
+          <p>You've made #{this.steps.counter}</p>
+          <p>Your time is #{this.timer.counter}</p>
+          <button class="next">Next level</button>`, 'level_passed', this.node, this.levelNumber);
+        }
+        return true;
+      } else {        
+        clearInterval(this._intId);
+        this.player.setState('stop');
+        return false;
+      }  
+    }
+  
+    stepLeft() {
+      const block = (this.player.curX > 0) ? (this.map.blocks[this.player.curX - 1][this.player.curY] || false) : false; 
+      if (this._move(block, 'move-left')) {
+        this.player.curX--;
+      }
+    }
+  
+    stepRight() {
+      const block = (this.player.curX < this.map.blocks.length - 1) ? (this.map.blocks[this.player.curX + 1][this.player.curY] || false) : false; 
+      if (this._move(block, 'move-right')) {
+        this.player.curX++;
+      }
+    }
+  
+    stepUp() {
+      const block = this.map.blocks[this.player.curX][this.player.curY - 1] || false; 
+      if (this._move(block, 'move-up')) {
+        this.player.curY--;
+      }
+    }
+  
+    stepDown() {      
+      const block = this.map.blocks[this.player.curX][this.player.curY + 1] || false; 
+      if (this._move(block, 'move-down')) {
+        this.player.curY++;
+      }
+    }
+  }
+    class Wall extends Cell {
+    setStatus() {
+      this._status = 'walled';
+      this.node.classList.add('walled');
+    }
+  }
+
+  const stages = {
+    1: [
+    [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+    [' ','*','*','*','*','*','*','*','*','*',' ','*','*','*','*','*','*','*','*','*',' '], 
+    [' ','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*',' '],
+    [' ','*',' ',' ','*','*','*',' ',' ','*',' ','*',' ',' ','*','*','*',' ',' ','*',' '],
+    [' ','*',' ','*',' ',' ',' ','*',' ','*',' ','*',' ','*',' ',' ',' ','*',' ','*',' '],
+    [' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' '],
+    [' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' '],
+    [' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' '],
+    [' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' '],
+    [' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' '],
+    [' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' '],
+    [' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' ','*',' '],
+    [' ','*',' ','*',' ',' ',' ','*',' ','*',' ','*',' ','*',' ',' ',' ','*',' ','*',' '],
+    [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+    [' ','*','*','*','*','*','*','*','*',' ','G',' ','*','*','*','*','*','*','*','*',' '], 
+    [' ','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*',' '],
+    [' ','*',' ','*','*',' ','*','*',' ','*',' ','*',' ','*','*',' ','*','*',' ','*',' '],
+    [' ','*',' ','*',' ',' ',' ','*',' ','*',' ','*',' ','*',' ',' ',' ','*',' ','*',' '],
+    [' ','*',' ',' ',' ','*',' ',' ',' ','*',' ','*',' ',' ',' ','*',' ',' ',' ','*',' '],
+    [' ','*','*','*','*','*','*','*','*','*',' ','*','*','*','*','*','*','*','*','*',' '], 
+    [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+    ]
+  };
+
+  Menu('<p>Start game</p><button class="play">PLAY</button>', 'new_game', document.getElementById('map'));
+
+  function Menu(code, cssClass, parentEl, numb) {
+    const menu = document.createElement('section');
+    menu.innerHTML = code;
+    menu.classList.add('menu-' + cssClass);
+    parentEl.appendChild(menu);
+
+    // Event listeners
+    if (parentEl.querySelector('button.play')) {
+      parentEl.querySelector('button.play').addEventListener('click', (e) => { buttonClick(e, 1) });
+    }
+    if (parentEl.querySelector('button.replay')) {
+      parentEl.querySelector('button.replay').addEventListener('click', (e) => { buttonClick(e, numb) });
+    }
+    if (parentEl.querySelector('button.next')) {
+      parentEl.querySelector('button.next').addEventListener('click', (e) => { buttonClick(e, numb + 1) });
+    }
+
+    // Handlers
+    function buttonClick(event, num) {
+      event.preventDefault();
+      parentEl.removeChild(menu);
+      event.target.removeEventListener('click', event);
+      Play(num);
+    }
+
+    function Play(levelNum) {
+      new Stage(new Map(parentEl, stages[levelNum]), levelNum);
+    }
+  }
+});

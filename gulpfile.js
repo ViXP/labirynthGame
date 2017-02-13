@@ -18,16 +18,18 @@ const gulp = require('gulp'),
 
 // Scripts tasks
 gulp.task('include', () => { 
-  return gulp.src("app/scripts/main.js")
+  return gulp.src("app/scripts/main.js")  
   .pipe(include())
+  .on('error', eatError)
   .pipe(gulp.dest("public/js"));
 });
 
 gulp.task('babel', () => {
-  return gulp.src('public/js/*.js')
+  return gulp.src('public/js/*.js')  
   .pipe(babel({
     presets: ['es2015']
   }))
+  .on('error', eatError)
   .pipe(gulp.dest('public/js'));
 });
 
@@ -46,9 +48,10 @@ gulp.task('scripts', () => {
 
 // CSS tasks
 gulp.task('sass', () => {
-  return gulp.src('app/styles/main.sass')
+  return gulp.src('app/styles/main.sass')  
   .pipe(sassglob())
   .pipe(sass())
+  .on('error', eatError)
   .pipe(gulp.dest('public/css'));
 });
 
@@ -56,8 +59,9 @@ gulp.task('postcss', () => {
   const plugins = [
   autoprefixer({browsers: ['last 10 versions']}),
   cssnano()];
-  return gulp.src('public/css/*.css')
+  return gulp.src('public/css/*.css')  
   .pipe(postcss(plugins))
+  .on('error', eatError)
   .pipe(gulp.dest('public/css'));
 });
 
@@ -68,14 +72,16 @@ gulp.task('styles', () => {
 
 // Assets tasks
 gulp.task('sprites', () => {
-  return gulp.src('app/images/*.svg')
+  return gulp.src('app/images/*.svg')  
   .pipe(svgSprite())
+  .on('error', eatError)
   .pipe(gulp.dest("public/images"));
 });
 
 gulp.task('imagemin', () => {
-  return gulp.src('public/images/*')
+  return gulp.src('public/images/*')  
   .pipe(imagemin())
+  .on('error', eatError)
   .pipe(gulp.dest('public/images'))
 }); 
 
@@ -86,15 +92,17 @@ gulp.task('assets', () => {
 
 // HTML tasks
 gulp.task('haml', () => {
-  return gulp.src('app/layouts/index.haml')
+  return gulp.src('app/layouts/index.haml')  
   .pipe(haml())
+  .on('error', eatError)
   .pipe(gulp.dest('public'));
 });
 
 gulp.task('htmlmin', () => {
-  return gulp.src('public/*.html')
-    .pipe(htmlmin({collapseWhitespace: true}))
-    .pipe(gulp.dest('public'));
+  return gulp.src('public/*.html')  
+  .pipe(htmlmin({collapseWhitespace: true}))
+  .on('error', eatError)
+  .pipe(gulp.dest('public'));
 });
 
 gulp.task('layouts', () => {
@@ -108,7 +116,7 @@ gulp.task('deploy', ['scripts', 'styles', 'assets', 'layouts']);
 gulp.task('watch', () => {
   gulp.watch('app/styles/**/*.sass', ['sass']);
   gulp.watch('app/scripts/**/*.js', ['include']);
-  gulp.watch('app/layouts/**/*.haml', ['haml'])
+  gulp.watch('app/layouts/**/*.haml', ['haml']);
 })
 
 
@@ -118,3 +126,9 @@ gulp.task('w', ['watch']);
 gulp.task('h', ['layouts']);
 gulp.task('js', ['scripts']);
 gulp.task('css', ['styles']);
+
+
+function eatError(err) {
+  console.log(err.toString());
+  this.emit('end');
+}

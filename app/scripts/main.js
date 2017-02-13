@@ -1,28 +1,7 @@
 "use strict";
 
-//=require classes/*.js 
-
 document.addEventListener('DOMContentLoaded', ()=> {
-  const container = document.getElementById('map');
-
-  function Play(levelNum) {
-    new Stage(new Map(container, stages[levelNum]), levelNum);
-  }
-
-  function Menu(code, cssClass, parentEl, callBack, argums) {
-    const menu = document.createElement('section');
-    menu.innerHTML = code;
-    menu.classList.add(cssClass);
-    parentEl.appendChild(menu);
-
-    parentEl.querySelector('button').addEventListener('click', (e)=>{
-      e.preventDefault();
-      parentEl.removeChild(menu);
-      callBack(...argums);
-    });
-  }
-
-  Menu('<p>Start game</p><button>PLAY</button>', 'menu-new_game', container, Play, [1]);  
+  //=require classes/*.js
 
   const stages = {
     1: [
@@ -46,7 +25,39 @@ document.addEventListener('DOMContentLoaded', ()=> {
     [' ','*',' ','*',' ',' ',' ','*',' ','*',' ','*',' ','*',' ',' ',' ','*',' ','*',' '],
     [' ','*',' ',' ',' ','*',' ',' ',' ','*',' ','*',' ',' ',' ','*',' ',' ',' ','*',' '],
     [' ','*','*','*','*','*','*','*','*','*',' ','*','*','*','*','*','*','*','*','*',' '], 
-    [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+    [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
     ]
   };
+
+  Menu('<p>Start game</p><button class="play">PLAY</button>', 'new_game', document.getElementById('map'));
+
+  function Menu(code, cssClass, parentEl, numb) {
+    const menu = document.createElement('section');
+    menu.innerHTML = code;
+    menu.classList.add('menu-' + cssClass);
+    parentEl.appendChild(menu);
+
+    // Event listeners
+    if (parentEl.querySelector('button.play')) {
+      parentEl.querySelector('button.play').addEventListener('click', (e) => { buttonClick(e, 1) });
+    }
+    if (parentEl.querySelector('button.replay')) {
+      parentEl.querySelector('button.replay').addEventListener('click', (e) => { buttonClick(e, numb) });
+    }
+    if (parentEl.querySelector('button.next')) {
+      parentEl.querySelector('button.next').addEventListener('click', (e) => { buttonClick(e, numb + 1) });
+    }
+
+    // Handlers
+    function buttonClick(event, num) {
+      event.preventDefault();
+      parentEl.removeChild(menu);
+      event.target.removeEventListener('click', event);
+      Play(num);
+    }
+
+    function Play(levelNum) {
+      new Stage(new Map(parentEl, stages[levelNum]), levelNum);
+    }
+  }
 });

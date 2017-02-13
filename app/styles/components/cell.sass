@@ -1,0 +1,25 @@
+/* CELLS STYLES */
+
+.cell
+  box-sizing: border-box
+  width: $cell-size
+  height: $cell-size
+  display: inline-block
+  border: .05vmin solid $dark-blue
+  border-radius: .3vmin
+
+  &.free
+    background-color: $blue
+    opacity: .45
+    
+    & .dot
+      background-color: $white
+      width: $dot-size
+      height: $dot-size
+      margin: auto
+      margin-top: ($cell-size / 2 - $dot-size / 2)
+      border-radius: 100%
+
+  &.walled
+    background-color: $grey
+    opacity: .65

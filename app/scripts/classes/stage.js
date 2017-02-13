@@ -2,12 +2,13 @@ class Stage {
   constructor(map, levelNum) {
     // Public properties
     this.map = map;
+    this.node = map.node;
     this.levelNumber = levelNum;
     this._intId = 0;      
-    this.player = new Pacman(this.map, this.map.startElement);
-    this.dotsCount = new Counter(this.map.dots, this.map.node, 'dots');
-    this.timer = new Counter(0, this.map.node, 'timer');
-    this.steps = new Counter(0, this.map.node, 'steps')
+    this.player = new Player(this.map, this.map.startElement);
+    this.dotsCount = new Counter(this.map.dots, this.node, 'dots');
+    this.timer = new Counter(0, this.node, 'timer');
+    this.steps = new Counter(0, this.node, 'steps')
     
     const self = this;
     
@@ -47,17 +48,45 @@ class Stage {
           //Vertical moves
           self._intId = (this._touchStart.pageY > this._touchEnd.pageY) ? setInterval(self.stepUp.bind(self), self.player.speed) : setInterval(self.stepDown.bind(self), self.player.speed);
         }
-      }        
+      },
+
+      pause: (event) => {
+        event.preventDefault();
+        if (event.keyCode == 27) {
+          clearInterval(self._intId);        
+          self._toggleControls();
+          if (self.node.querySelector('section')) {
+            self.node.removeChild(self.node.querySelector('section'));
+          } else {
+            Menu('<h2>Game paused</h2><h3>Press ESC to continue</h3><button class="replay">Replay</button>', 'pause', this.node, this.levelNumber);
+          }
+        }
+      }
+
     };
 
-    document.addEventListener('keydown', this._handlers.keyDown);      
-    document.addEventListener('touchstart', this._handlers.touchStart);
-    document.addEventListener('touchmove', this._handlers.touchMove);
+    document.addEventListener('keydown', this._handlers.pause)
+    this._toggleControls();
          
     this._time = setInterval(()=>{
       this.timer.up();
     }, 1000);
   } 
+
+  _toggleControls() {
+    this.timer.pause();
+    this.dotsCount.pause();
+    this.steps.pause();
+    if (this.timer.paused) {
+      document.removeEventListener('keydown', this._handlers.keyDown);      
+      document.removeEventListener('touchstart', this._handlers.touchStart);      
+      document.removeEventListener('touchmove', this._handlers.touchMove);
+    } else {
+      document.addEventListener('keydown', this._handlers.keyDown);
+      document.addEventListener('touchstart', this._handlers.touchStart);
+      document.addEventListener('touchmove', this._handlers.touchMove);
+    }
+  }
 
   // Main gameplay method
   _move(block, cssClass) {
@@ -67,18 +96,13 @@ class Stage {
       this.steps.up();
       if (block.removeDot() && this.dotsCount.down() && this.dotsCount.status == 'ended') {
         /* GAMEOVER screen*/          
-        this.timer.freeze();
-        this.dotsCount.freeze();
-        this.steps.freeze();
+        this._toggleControls();
         clearInterval(this._time)
-        document.removeEventListener('keydown', this._handlers.keyDown);      
-        document.removeEventListener('touchstart', this._handlers.touchStart);
-        document.removeEventListener('touchmove', this._handlers.touchMove);
         Menu(`<h2>Congratulations!</h2>
         <h3>You've finished the level</h3>
         <p>You've made #{this.steps.counter}</p>
         <p>Your time is #{this.timer.counter}</p>
-        <button>Next level</button>`, 'menu-level_passed', this.map.node, Play, this.levelNumber + 1);
+        <button class="next">Next level</button>`, 'level_passed', this.node, this.levelNumber);
       }
       return true;
     } else {        

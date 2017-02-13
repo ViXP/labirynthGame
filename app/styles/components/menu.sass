@@ -3,8 +3,17 @@
 section
   position: absolute
   opacity: .6
+  top: 0
+  left: 0
   width: 100%
   height: 100%
+
+  & h2
+    font-size: 6vmin
+  & h3
+    font-size: 4vmin
+  & p
+    font-size: 3vmin
 
   & button 
     width: 15vmin
@@ -21,16 +30,16 @@ section
       box-shadow: 0 0 1.5vmin .5vmin $yellow
       border: .5vmin inset $orange
 
-  &.menu
-    &-new_game
+  &.menu-
+    &new_game
       background-color: $white
       color: $black
-
-      & p
-        font-size: 4vmin
 
       & button       
         background-color: $orange
 
         &:hover
-          background-color: $yellow
+          background-color: $yellow          
+    &pause
+      background-color: $white
+      color: $black

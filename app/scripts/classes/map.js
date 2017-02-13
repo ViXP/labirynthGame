@@ -7,7 +7,7 @@ class Map {
     this.node = domEl;
 
     this._stage = mapDraw;
-
+    
     this.rebuild();
   }
 

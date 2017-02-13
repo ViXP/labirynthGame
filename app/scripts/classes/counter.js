@@ -11,7 +11,7 @@ class Counter {
     this.counter = quantity || 0;
 
     // Private properties
-    this._frozen = false;
+    this._stopped = true;
 
     this.setStatus('started');
     this.nodeUpdate();
@@ -34,12 +34,16 @@ class Counter {
     return false;
   }
 
-  freeze() {
-    this._frozen = true;
+  pause() {
+    this._stopped = (this._stopped) ? false : true;
+  }
+
+  get paused() {
+    return this._stopped;
   }
 
   up() {      
-    if (!this._frozen) {
+    if (!this._stopped) {
       this.counter++;
       this.nodeUpdate();
       return true;

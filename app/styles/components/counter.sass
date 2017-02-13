@@ -17,24 +17,23 @@
     
     &::before
       content: 'Dots: '
-      font-size: 2.2vmin
-      line-height: 2.4vmin
-      display: block
+      @extend %dots-before
     
   &.steps
     left: 13vmin
   
     &::before
       content: 'Steps: '
-      font-size: 2.2vmin
-      line-height: 2.4vmin
-      display: block
+      @extend %dots-before
    
   &.timer
     right: 1.5vmin 
   
     &::before
       content: 'Time: '
-      font-size: 2.2vmin
-      line-height: 2.4vmin
-      display: block
+      @extend %dots-before
+
+%dots-before
+  font-size: 2.2vmin
+  line-height: 2.4vmin
+  display: block

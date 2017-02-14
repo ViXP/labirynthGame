@@ -1,6 +1,6 @@
-function Handlers() {
-  if (Handlers.instance) { return Handlers.instance; }
-  Handlers.instance = this;
+function Handler() {
+  if (Handler.instance) { return Handler.instance; }
+  Handler.instance = this;
   this._handlers = (this._handlers == null) ? {} : this._handlers;
 
   this.append = function(hash) {

@@ -9,9 +9,10 @@ class Stage {
     this.timer = new Counter(0, this.node, 'timer');
     this.steps = new Counter(0, this.node, 'steps');
 
-    // Private properties
+    // Private properties    
+    const self = this;
     this._intId = 0;
-    this._handlers = new Handlers().append({
+    this._handlers = new Handler().append({
       keyDown: (event) => {
         event.preventDefault();
         clearInterval(self._intId);
@@ -53,20 +54,24 @@ class Stage {
         if (event.keyCode == 27) {
           clearInterval(self._intId);
           self._toggleControls();
-          if (self.node.querySelector('section')) {
-            self.node.removeChild(self.node.querySelector('section'));
-          } else {
-            Menu('<h2>Game paused</h2><h3>Press ESC to continue</h3><button class="replay">Replay</button>', 'pause', this.node, this.levelNumber);
-          }
         }
       }
     });
-    const self = this;
+    this._pauseMenu = new Menu('<h2>Game paused</h2><h3>Press ESC to continue</h3><button class="replay">Replay</button>', 'pause', this.node, this.levelNumber, undefined, true);
+    this._finishMenu = new Menu(`
+      <h2>Congratulations!</h2>
+      <h3>You've finished the level</h3>
+      <p>You've made #{this.steps.counter}</p>
+      <p>Your time is #{this.timer.counter}</p>
+      <button class="next">Next level</button>`, 'level_passed', this.node, this.levelNumber);
+
+    // Construction
     this._toggleControls();
+    document.removeEventListener('keydown', this._handlers.get('pause'));
+    document.addEventListener('keydown', this._handlers.get('pause'));
     this._time = setInterval(() => {
       this.timer.up();
     }, 1000);
-    document.addEventListener('keydown', this._handlers.get('pause'));
   } 
 
   _toggleControls() {
@@ -95,11 +100,7 @@ class Stage {
         this._toggleControls();
         document.removeEventListener('keydown', this._handlers.get('pause'));
         clearInterval(this._time);
-        Menu(`<h2>Congratulations!</h2>
-        <h3>You've finished the level</h3>
-        <p>You've made #{this.steps.counter}</p>
-        <p>Your time is #{this.timer.counter}</p>
-        <button class="next">Next level</button>`, 'level_passed', this.node, this.levelNumber);
+        this._finishMenu.show();
       }
       return true;
     } else {        

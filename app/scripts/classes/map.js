@@ -41,9 +41,11 @@ class Map {
   }
 
   _removeElements() {
-    const childLen = this.node.childNodes.length;
-    for(let i = 0; i < childLen; i++) {
-      this.node.removeChild(this.node.childNodes[0]);
+    if (this.node && this.node.childNodes) {
+      const childLen = this.node.childNodes.length;
+      for(let i = 0; i < childLen; i++) {
+        this.node.removeChild(this.node.childNodes[0]);
+      }
     }
   }
 }

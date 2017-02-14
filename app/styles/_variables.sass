@@ -1,7 +1,8 @@
 /* VARIABLES */
 
 $font-family: 'Pangolin', cursive
-$cell-size: 3.4vmin 
+$cells-in-row: 21
+$cell-size: (100vmin / $cells-in-row) 
 $dot-size: ($cell-size / 7)
-$map-size: ($cell-size * 21)
+$map-size: ($cell-size * $cells-in-row)
 $player-size: ($cell-size - .4vmin)

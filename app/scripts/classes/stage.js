@@ -3,17 +3,15 @@ class Stage {
     // Public properties
     this.map = map;
     this.node = map.node;
-    this.levelNumber = levelNum;
-    this._intId = 0;      
+    this.levelNumber = levelNum;    
     this.player = new Player(this.map, this.map.startElement);
     this.dotsCount = new Counter(this.map.dots, this.node, 'dots');
     this.timer = new Counter(0, this.node, 'timer');
-    this.steps = new Counter(0, this.node, 'steps')
-    
-    const self = this;
-    
-    // Event handlers
-    this._handlers = {
+    this.steps = new Counter(0, this.node, 'steps');
+
+    // Private properties
+    this._intId = 0;
+    this._handlers = new Handlers().append({
       keyDown: (event) => {
         event.preventDefault();
         clearInterval(self._intId);
@@ -53,7 +51,7 @@ class Stage {
       pause: (event) => {
         event.preventDefault();
         if (event.keyCode == 27) {
-          clearInterval(self._intId);        
+          clearInterval(self._intId);
           self._toggleControls();
           if (self.node.querySelector('section')) {
             self.node.removeChild(self.node.querySelector('section'));
@@ -62,15 +60,13 @@ class Stage {
           }
         }
       }
-
-    };
-
-    document.addEventListener('keydown', this._handlers.pause)
+    });
+    const self = this;
     this._toggleControls();
-         
-    this._time = setInterval(()=>{
+    this._time = setInterval(() => {
       this.timer.up();
     }, 1000);
+    document.addEventListener('keydown', this._handlers.get('pause'));
   } 
 
   _toggleControls() {
@@ -78,13 +74,13 @@ class Stage {
     this.dotsCount.pause();
     this.steps.pause();
     if (this.timer.paused) {
-      document.removeEventListener('keydown', this._handlers.keyDown);      
-      document.removeEventListener('touchstart', this._handlers.touchStart);      
-      document.removeEventListener('touchmove', this._handlers.touchMove);
+      document.removeEventListener('keydown', this._handlers.get('keyDown'));
+      document.removeEventListener('touchstart', this._handlers.get('touchStart'));      
+      document.removeEventListener('touchmove', this._handlers.get('touchMove'));
     } else {
-      document.addEventListener('keydown', this._handlers.keyDown);
-      document.addEventListener('touchstart', this._handlers.touchStart);
-      document.addEventListener('touchmove', this._handlers.touchMove);
+      document.addEventListener('keydown', this._handlers.get('keyDown'));
+      document.addEventListener('touchstart', this._handlers.get('touchStart'));
+      document.addEventListener('touchmove', this._handlers.get('touchMove'));
     }
   }
 
@@ -95,9 +91,10 @@ class Stage {
       this.player.setState(cssClass);
       this.steps.up();
       if (block.removeDot() && this.dotsCount.down() && this.dotsCount.status == 'ended') {
-        /* GAMEOVER screen*/          
+        /* GAMEOVER screen*/
         this._toggleControls();
-        clearInterval(this._time)
+        document.removeEventListener('keydown', this._handlers.get('pause'));
+        clearInterval(this._time);
         Menu(`<h2>Congratulations!</h2>
         <h3>You've finished the level</h3>
         <p>You've made #{this.steps.counter}</p>

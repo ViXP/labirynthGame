@@ -13,9 +13,9 @@ class Map {
 
   rebuild() {
     this.blocks = [];
-    this.node.innerHTML = '';
     const self = this;
 
+    this._removeElements();
     self._stage.forEach(function(line, i){        
       self.node.appendChild(document.createElement('div'));        
       const row = self.node.lastElementChild;
@@ -38,5 +38,12 @@ class Map {
         self.quantity++;
       });
     });
+  }
+
+  _removeElements() {
+    const childLen = this.node.childNodes.length;
+    for(let i = 0; i < childLen; i++) {
+      this.node.removeChild(this.node.childNodes[0]);
+    }
   }
 }

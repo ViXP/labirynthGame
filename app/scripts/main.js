@@ -29,8 +29,6 @@ document.addEventListener('DOMContentLoaded', ()=> {
     ]
   };
 
-  Menu('<p>Start game</p><button class="play">PLAY</button>', 'new_game', document.getElementById('map'));
-
   function Menu(code, cssClass, parentEl, numb) {
     const menu = document.createElement('section');
     menu.innerHTML = code;
@@ -47,8 +45,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
     if (parentEl.querySelector('button.next')) {
       parentEl.querySelector('button.next').addEventListener('click', (e) => { buttonClick(e, numb + 1) });
     }
-
-    // Handlers
+    
     function buttonClick(event, num) {
       event.preventDefault();
       parentEl.removeChild(menu);
@@ -57,7 +54,11 @@ document.addEventListener('DOMContentLoaded', ()=> {
     }
 
     function Play(levelNum) {
+      document.removeEventListener('keydown', new Handlers().get('pause'));
       new Stage(new Map(parentEl, stages[levelNum]), levelNum);
     }
   }
+
+
+  Menu('<p>Start game</p><button class="play">PLAY</button>', 'new_game', document.getElementById('map'));
 });

@@ -1,10 +1,12 @@
 class Map {
   constructor(domEl, mapDraw) {
-    // Public properties
+    // Public properties  
     this.quantity = 0;
     this.dots = 0;
+    this.node = domEl;    
     this.blocks = [];
-    this.node = domEl;
+    this.enemiesPos = [];
+    self.playerPos = '';
 
     this._stage = mapDraw;
     
@@ -25,11 +27,15 @@ class Map {
         if (['*', '|', 1].includes(state)) {
           // If wall
           self.blocks[j][i] = new Wall(row, j, i);
-        } else if (state == 'G') {
+        } else if (state == 'P') {
           // If player
           self.blocks[j][i] = new Space(row, j, i);
           self.blocks[j][i].removeDot();
-          self.startElement = self.blocks[j][i];
+          self.playerPos = self.blocks[j][i];
+        } else if (state == 'E') {
+          // If enemy
+          self.blocks[j][i] = new Space(row, j, i);
+          self.enemiesPos.push(self.blocks[j][i]);
         } else {
           // If free space
           self.blocks[j][i] = new Space(row, j, i);

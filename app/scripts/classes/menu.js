@@ -5,7 +5,7 @@ class Menu {
     menu.classList.add('menu-' + cssClass);
     domNode.appendChild(menu);
 
-    this.node = domNode.querySelector('section');
+    this.node = domNode.querySelector('.menu-' + cssClass);
 
     const self = this;
     this._hidden = true;
@@ -44,8 +44,9 @@ class Menu {
    
     if (cancelable) {
       document.addEventListener('keydown', this._handlers.get('showHide'));
+    } else {
+      document.removeEventListener('keydown', this._handlers.get('showHide'));
     }
-
     return this;
   }
 

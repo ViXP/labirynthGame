@@ -4,14 +4,17 @@ class Stage {
     this.map = map;
     this.node = map.node;
     this.levelNumber = levelNum;    
-    this.player = new Player(this.map, this.map.startElement);
+    this.player = new Player(this.map, this.map.playerPos);
     this.dotsCount = new Counter(this.map.dots, this.node, 'dots');
     this.timer = new Counter(0, this.node, 'timer');
     this.steps = new Counter(0, this.node, 'steps');
+    this.enemies = [];
 
     // Private properties    
     const self = this;
     this._intId = 0;
+
+    // Private collections
     this._handlers = new Handler().append({
       keyDown: (event) => {
         event.preventDefault();
@@ -57,15 +60,20 @@ class Stage {
         }
       }
     });
-    this._pauseMenu = new Menu('<h2>Game paused</h2><h3>Press ESC to continue</h3><button class="replay">Replay</button>', 'pause', this.node, this.levelNumber, undefined, true);
-    this._finishMenu = new Menu(`
-      <h2>Congratulations!</h2>
-      <h3>You've finished the level</h3>
-      <p>You've made #{this.steps.counter}</p>
-      <p>Your time is #{this.timer.counter}</p>
-      <button class="next">Next level</button>`, 'level_passed', this.node, this.levelNumber);
-
+    this._menus = {
+      pauseMenu: new Menu('<h2>Game paused</h2><h3>Press ESC to continue</h3><button class="replay">Replay</button>', 'pause', this.node, this.levelNumber, undefined, true),
+      failedMenu: new Menu("<h2>You've lost!</h2><p>The enemy ate you</p><button class=\"replay\">Replay</button", 'failed', this.node, this.levelNumber),
+      finishMenu: new Menu(`
+        <h2>Congratulations!</h2>
+        <h3>You've finished the level</h3>
+        <p>You've made #{this.steps.counter}</p>
+        <p>Your time is #{this.timer.counter}</p>
+        <button class="next">Next level</button>`, 'level_passed', this.node, this.levelNumber),
+    }
     // Construction
+    for (let i in this.map.enemiesPos) {
+      this.enemies.push(new Enemy(this.map, this.map.enemiesPos[i]));
+    }
     this._toggleControls();
     document.removeEventListener('keydown', this._handlers.get('pause'));
     document.addEventListener('keydown', this._handlers.get('pause'));
@@ -96,18 +104,36 @@ class Stage {
       this.player.setState(cssClass);
       this.steps.up();
       if (block.removeDot() && this.dotsCount.down() && this.dotsCount.status == 'ended') {
-        /* GAMEOVER screen*/
-        this._toggleControls();
-        document.removeEventListener('keydown', this._handlers.get('pause'));
-        clearInterval(this._time);
-        this._finishMenu.show();
+        // If all dots collected
+        this._gameOver(this._menus.finishMenu);
+      }
+      for (let i in this.enemies) {
+        if ((this.player.curX == this.enemies[i].curX) && (this.player.curY == this.enemies[i].curY)) {
+          // If catched an enemy
+          console.log('catched');
+          this._gameOver(this._menus.failedMenu);
+          break;
+        }
       }
       return true;
     } else {        
       clearInterval(this._intId);
       this.player.setState('stop');
       return false;
-    }  
+    }
+  }
+
+  _gameOver(menu) {
+    this._toggleControls();
+    document.removeEventListener('keydown', this._handlers.get('pause'));
+    clearInterval(this._time);
+    for (let i in this._menus) {
+      if (this._menus[i] != menu) { 
+        this._menus[i].destroy();
+      } else {        
+        menu.show();
+      }
+    }
   }
 
   stepLeft() {

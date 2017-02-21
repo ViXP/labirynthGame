@@ -6,8 +6,8 @@ class Menu {
     domNode.appendChild(menu);
 
     this.node = domNode.querySelector('.menu-' + cssClass);
-
     const self = this;
+
     this._hidden = true;
     this._handlers = new Handler().append({
       buttonClick: (event, num) => {
@@ -39,7 +39,6 @@ class Menu {
     // Optional actions
     if (actions instanceof Object) {
       /* MUST BE WRITTEN */
-
     }    
    
     if (cancelable) {
@@ -56,14 +55,9 @@ class Menu {
 
   play(level) {
     this.hide();
-    new Stage(new Map(this.node.parentElement, stages[level]), level);
-    this.destroy();
-  }
-
-  destroy() {
-    this.node.parentElement.removeChild(this.node);
     document.removeEventListener('keydown', this._handlers.get('showHide'));
     document.removeEventListener('click', this._handlers.get('buttonClick'));
+    new Stage(this.node.parentElement, stages[level], level);
   }
 
   show() {

@@ -71,28 +71,28 @@ gulp.task('styles', () => {
 
 
 // Assets tasks
-gulp.task('sprites', () => {
-  return gulp.src('app/images/*.svg')  
-  .pipe(svgSprite())
-  .on('error', eatError)
-  .pipe(gulp.dest("public/images"));
-});
-
 gulp.task('imagemin', () => {
-  return gulp.src('public/images/*')  
+  return gulp.src('app/images/*.svg')  
   .pipe(imagemin())
   .on('error', eatError)
   .pipe(gulp.dest('public/images'))
 }); 
 
+gulp.task('sprites', () => {
+  return gulp.src('public/images/*.svg')  
+  .pipe(svgSprite())
+  .on('error', eatError)
+  .pipe(gulp.dest("public/images"));
+});
+
 gulp.task('assets', () => {
-  sequence('sprites', 'imagemin');
+  sequence('imagemin', 'sprites');
 });
 
 
 // HTML tasks
 gulp.task('haml', () => {
-  return gulp.src('app/layouts/index.haml')  
+  return gulp.src('app/layouts/*.haml')  
   .pipe(haml())
   .on('error', eatError)
   .pipe(gulp.dest('public'));

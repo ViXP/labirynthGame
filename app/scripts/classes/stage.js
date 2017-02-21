@@ -1,8 +1,11 @@
 class Stage {
-  constructor(map, levelNum) {
-    // Public properties
-    this.map = map;
-    this.node = map.node;
+  constructor(parEl, lvlPlan, levelNum) {
+    // Resetting the stage
+    this._resetDom(parEl);
+
+    // Public properties    
+    this.node = parEl;
+    this.map = new Map(this.node, lvlPlan);
     this.levelNumber = levelNum;    
     this.player = new Player(this.map, this.map.playerPos);
     this.dotsCount = new Counter(this.map.dots, this.node, 'dots');
@@ -61,14 +64,15 @@ class Stage {
       }
     });
     this._menus = {
-      pauseMenu: new Menu('<h2>Game paused</h2><h3>Press ESC to continue</h3><button class="replay">Replay</button>', 'pause', this.node, this.levelNumber, undefined, true),
-      failedMenu: new Menu("<h2>You've lost!</h2><p>The enemy ate you</p><button class=\"replay\">Replay</button", 'failed', this.node, this.levelNumber),
+      pauseMenu: new Menu('<h2>Game paused</h2><h3>Press ESC to continue</h3><button class="replay">&#8635;</button>', 'pause', this.node, this.levelNumber, undefined, true),
+      failedMenu: new Menu('<h2>You\'ve lost! :(</h2><p>The enemy ate you</p><button class="replay">&#8635;</button>', 'failed', this.node, this.levelNumber),
       finishMenu: new Menu(`
         <h2>Congratulations!</h2>
         <h3>You've finished the level</h3>
         <p>You've made #{this.steps.counter}</p>
         <p>Your time is #{this.timer.counter}</p>
-        <button class="next">Next level</button>`, 'level_passed', this.node, this.levelNumber),
+        <button class="next">Next level</button>`, 'level_passed', this.node, this.levelNumber)
+      
     }
     // Construction
     for (let i in this.map.enemiesPos) {
@@ -81,6 +85,16 @@ class Stage {
       this.timer.up();
     }, 1000);
   } 
+
+  // Removing all DOM elements
+  _resetDom(dom) {
+    if (dom && dom.childNodes) {
+      const childLen = dom.childNodes.length;
+      for(let i = 0; i < childLen; i++) {
+        dom.removeChild(dom.childNodes[0]);
+      }
+    }
+  }
 
   _toggleControls() {
     this.timer.pause();
@@ -110,13 +124,11 @@ class Stage {
       for (let i in this.enemies) {
         if ((this.player.curX == this.enemies[i].curX) && (this.player.curY == this.enemies[i].curY)) {
           // If catched an enemy
-          console.log('catched');
           this._gameOver(this._menus.failedMenu);
-          break;
         }
       }
       return true;
-    } else {        
+    } else {
       clearInterval(this._intId);
       this.player.setState('stop');
       return false;
@@ -127,13 +139,7 @@ class Stage {
     this._toggleControls();
     document.removeEventListener('keydown', this._handlers.get('pause'));
     clearInterval(this._time);
-    for (let i in this._menus) {
-      if (this._menus[i] != menu) { 
-        this._menus[i].destroy();
-      } else {        
-        menu.show();
-      }
-    }
+    menu.show();
   }
 
   stepLeft() {

@@ -1,24 +1,18 @@
 class Map {
-  constructor(domEl, mapDraw) {
+  constructor(domEl, lvlPlan) {
     // Public properties  
     this.quantity = 0;
     this.dots = 0;
     this.node = domEl;    
     this.blocks = [];
     this.enemiesPos = [];
-    self.playerPos = '';
+    this.playerPos = '';
 
-    this._stage = mapDraw;
-    
-    this.rebuild();
-  }
-
-  rebuild() {
-    this.blocks = [];
+    // Private properties
+    this._stage = lvlPlan;    
     const self = this;
 
-    this._removeElements();
-    self._stage.forEach(function(line, i){        
+    this._stage.forEach((line, i) => {        
       self.node.appendChild(document.createElement('div'));        
       const row = self.node.lastElementChild;
       row.classList.add('row');        
@@ -44,14 +38,5 @@ class Map {
         self.quantity++;
       });
     });
-  }
-
-  _removeElements() {
-    if (this.node && this.node.childNodes) {
-      const childLen = this.node.childNodes.length;
-      for(let i = 0; i < childLen; i++) {
-        this.node.removeChild(this.node.childNodes[0]);
-      }
-    }
   }
 }

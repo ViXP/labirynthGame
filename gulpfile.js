@@ -1,6 +1,7 @@
 'use strict';
 
 const gulp = require('gulp'),
+      clean = require('gulp-clean'),
       sequence = require('run-sequence'),
       include = require("gulp-include"),
       babel = require('gulp-babel'),  
@@ -11,10 +12,16 @@ const gulp = require('gulp'),
       autoprefixer = require('autoprefixer'),
       cssnano = require('cssnano'),
       pump = require('pump'),         
-      imagemin = require('gulp-imagemin'),    
-      svgSprite = require("gulp-svg-sprites"),
+      svgmin = require('gulp-svgmin'), 
+      svgSprite = require("gulp-svg-sprite"),
       haml = require('gulp-haml'),
       htmlmin = require('gulp-htmlmin');
+
+// Operational tasks
+gulp.task('clear_public', () => {
+  return gulp.src('public/*', {read: false})
+  .pipe(clean());
+});
 
 // Scripts tasks
 gulp.task('include', () => { 
@@ -71,22 +78,40 @@ gulp.task('styles', () => {
 
 
 // Assets tasks
-gulp.task('imagemin', () => {
-  return gulp.src('app/images/*.svg')  
-  .pipe(imagemin())
+gulp.task('svgmin', () => {
+  return gulp.src('app/images/*.svg')
+  .pipe(svgmin({
+    plugins: [{
+      cleanupIDs: false
+    }]
+  }))
   .on('error', eatError)
-  .pipe(gulp.dest('public/images'))
+  .pipe(gulp.dest('public/images'));
 }); 
 
-gulp.task('sprites', () => {
-  return gulp.src('public/images/*.svg')  
-  .pipe(svgSprite())
+gulp.task('sprite', () => {
+  return gulp.src('app/images/*.svg')
+  .pipe(svgSprite([{ 
+    shape : { 
+      svgo: {
+        plugins : [{
+          removeTitle : true,
+          cleanupIDs : false
+        }]
+      },
+      dest : '.'
+    }
+  },
+    { svg: {
+      namespaceIDs: false
+    } 
+  }]))
   .on('error', eatError)
-  .pipe(gulp.dest("public/images"));
+  .pipe(gulp.dest('public/images'));
 });
 
 gulp.task('assets', () => {
-  sequence('imagemin', 'sprites');
+  sequence('svgmin');
 });
 
 
@@ -111,9 +136,12 @@ gulp.task('layouts', () => {
 
 
 // Common tasks
-gulp.task('deploy', ['scripts', 'styles', 'assets', 'layouts']);
+gulp.task('deploy', () => {
+  sequence('clear_public', ['scripts', 'styles', 'assets', 'layouts']);
+});
 
 gulp.task('watch', () => {
+  gulp.watch('app/images/*', ['assets']);
   gulp.watch('app/styles/**/*.sass', ['sass']);
   gulp.watch('app/scripts/**/*.js', ['include']);
   gulp.watch('app/layouts/**/*.haml', ['haml']);
